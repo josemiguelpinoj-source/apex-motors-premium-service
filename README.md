@@ -25,7 +25,6 @@ Se utilizó GitHub Copilot como agente de IA para apoyar la estructura, el códi
 
 - «Crea un sitio Django sin base de datos, con datos JSON, seis páginas, menú, Bootstrap, diseño responsive y formulario validado».
 - «Implementa una capa de servicios con caché, filtros de plantilla con humanize, carrusel reutilizable y pruebas automáticas».
-- «Compara el proyecto con la pauta de evaluación y corrige las brechas verificables».
 
 **Acepté:** la separación entre vistas, rutas, lectura JSON, contexto compartido, plantillas, estáticos y pruebas.
 
