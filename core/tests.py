@@ -16,6 +16,7 @@ class SitePagesTests(SimpleTestCase):
                 self.assertEqual(response.status_code, 200)
         home_page = self.client.get(reverse("home"))
         self.assertContains(home_page, reverse("service_detail", args=(1,)))
+        self.assertContains(home_page, "/static/core/images/promesa-estandar.jpg")
 
     def test_services_are_read_from_json_and_can_be_filtered(self):
         self.assertGreaterEqual(len(get_services()), 6)
