@@ -107,9 +107,9 @@ img { display: block; max-width: 100%; }
 .story-section { background: #e9e6de; }
 .story-section .container-xl { display: grid; grid-template-columns: 1.1fr .9fr; gap: 8%; align-items: center; }
 .story-image { position: relative; height: 495px; overflow: hidden; background: #d2cec5; }
-.story-stamp { position: absolute; right: 0; bottom: 0; display: flex; width: 155px; height: 155px; flex-direction: column; justify-content: center; align-items: center; background: var(--gold); color: var(--ink); }
-.story-stamp span { font-family: var(--serif); font-size: 34px; }
-.story-stamp small { font-size: 7px; letter-spacing: .13em; }
+.story-stamp { position: absolute; right: auto; bottom: 18px; left: 50%; display: flex; width: 120px; height: 108px; flex-direction: column; justify-content: center; align-items: center; transform: translateX(-50%); background: var(--gold); color: var(--ink); }
+.story-stamp span { font-family: var(--serif); font-size: 27px; }
+.story-stamp small { font-size: 6px; letter-spacing: .1em; }
 .story-copy .display-title { margin-bottom: 25px; }
 .story-copy .lead-copy { max-width: 440px; margin-bottom: 30px; }
 .testimonial-section { background: var(--ink); color: var(--paper); text-align: center; }
@@ -227,6 +227,8 @@ img { display: block; max-width: 100%; }
   .service-card-image { height: 205px; }
   .story-section .container-xl { grid-template-columns: 1fr; gap: 35px; }
   .story-image { height: 370px; }
+  .story-stamp { bottom: 14px; width: 108px; height: 96px; }
+  .story-stamp span { font-size: 24px; }
   .story-copy .display-title { font-size: 46px; }
   .testimonial-section blockquote { font-size: 31px; }
   .cta-band { padding: 58px 0; }
