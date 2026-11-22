@@ -16,7 +16,7 @@
         <span class="service-number">{{ forloop.counter|stringformat:"02d" }}</span>
       </div>
       <div class="service-card-body">
-        <span class="eyebrow">{{ service.category }}</span>
+        <span class="eyebrow">{{ service.category }} · {% if service.price <= 60000 %}Económico{% else %}Premium{% endif %}</span>
         <h3>{{ service.name }}</h3>
         <p>{{ service.description }}</p>
         <div class="service-meta"><span>{{ service.duration }}</span><strong>{{ service.price|clp }}</strong></div>

@@ -60,7 +60,7 @@
         </div>
         <div class="col-6 col-lg-3">
           <h2 class="footer-heading">Visítanos</h2>
-          <p>{{ business.address }}<br>{{ business.hours }}</p>
+          <p>{{ business.address }}<br>{% for day, hours in business.hours.items %}{{ day }}: {{ hours }}{% if not forloop.last %}<br>{% endif %}{% endfor %}</p>
         </div>
         <div class="col-6 col-lg-2">
           <h2 class="footer-heading">Contacto</h2>

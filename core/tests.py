@@ -23,8 +23,22 @@ class SitePagesTests(SimpleTestCase):
         response = self.client.get(reverse("services"), {"categoria": "Diagnóstico"})
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Diagnóstico computarizado")
-        self.assertContains(response, "$89.000")
+        self.assertContains(response, "$25.000")
+        self.assertContains(response, "$42.500")
+        self.assertContains(response, "Económico")
+        self.assertNotContains(response, "· Premium")
         self.assertNotContains(response, "Detalle y protección")
+
+    def test_service_price_labels_reflect_catalog_data(self):
+        response = self.client.get(reverse("services"))
+        self.assertContains(response, "Económico")
+        self.assertContains(response, "Premium")
+
+    def test_business_hours_are_rendered_as_readable_entries(self):
+        response = self.client.get(reverse("home"))
+        self.assertContains(response, "Lun-Vie: 08:30–18:30")
+        self.assertContains(response, "Sábado: 08:30–13:00")
+        self.assertNotContains(response, "{&#x27;Lun-Vie&#x27;")
 
     def test_service_detail_exists(self):
         response = self.client.get(reverse("service_detail", args=(1,)))

@@ -20,15 +20,16 @@ def services(request):
     all_services = get_services()
     categories = sorted({item["category"] for item in all_services})
     selected_category = request.GET.get("categoria", "").strip()
-    if selected_category and selected_category in categories:
-        visible_services = [
-            item for item in all_services if item["category"] == selected_category
-        ]
-    else:
-        visible_services = all_services
+    if selected_category not in categories:
         selected_category = ""
 
-    total_from = sum(item["price"] for item in visible_services)
+    visible_services = []
+    total_from = 0
+    for item in all_services:
+        if not selected_category or item["category"] == selected_category:
+            visible_services.append(item)
+            total_from += item["price"]
+
     average_price = total_from // len(visible_services) if visible_services else 0
     return render(
         request,
