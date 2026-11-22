@@ -1,0 +1,10 @@
+{% extends 'core/base.html' %}
+{% load clp %}
+{% block title %}{{ service.name }} | Apex Motors Premium Service{% endblock %}
+{% block content %}
+<section class="page-hero"><div class="container-xl reveal"><p class="eyebrow"><a href="{% url 'services' %}">SERVICIOS</a> / {{ service.category|upper }}</p><h1 class="display-title">{{ service.name }}</h1><p class="lead-copy">{{ service.description }}</p></div></section>
+<section class="detail-section section-pad pt-0"><div class="container-xl row g-5 align-items-center">
+  <div class="col-lg-7 detail-image reveal"><img src="{{ service.image }}" alt="{{ service.name }}" loading="lazy"><span class="image-fallback" aria-hidden="true">✦</span></div>
+  <div class="col-lg-5 detail-panel reveal"><p class="eyebrow">SERVICIO ESPECIALIZADO</p><h2 class="display-title">Cuidado experto,<br><em>sin compromisos.</em></h2><p>{{ service.description }} Nuestro equipo te explicará el alcance del trabajo antes de comenzar y entregará recomendaciones según las necesidades de tu vehículo.</p><dl class="detail-facts"><div><dt>Inversión desde</dt><dd>{{ service.price|clp }}</dd></div><div><dt>Duración estimada</dt><dd>{{ service.duration }}</dd></div><div><dt>Especialidad</dt><dd>{{ service.category }}</dd></div></dl><a class="btn btn-gold w-100" href="{% url 'contact' %}">Solicitar evaluación <span aria-hidden="true">↗</span></a></div>
+</div></section>
+{% endblock %}

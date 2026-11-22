@@ -1,0 +1,20 @@
+{% extends 'core/base.html' %}
+{% load clp %}
+{% block title %}Servicios | Apex Motors Premium Service{% endblock %}
+{% block content %}
+<section class="page-hero"><div class="container-xl reveal"><p class="eyebrow">APEX MOTORS / ESPECIALIDADES</p><h1 class="display-title">Precisión en cada<br><em>detalle técnico.</em></h1><p class="lead-copy">Soluciones expertas para que tu vehículo rinda como fue diseñado.</p></div></section>
+<section class="catalog-section section-pad pt-0"><div class="container-xl">
+  <form class="filter-form" method="get" action="{% url 'services' %}">
+    <label for="category-filter">Filtrar especialidad</label>
+    <select id="category-filter" name="categoria">
+      <option value="">Todas las especialidades</option>
+      {% for category in categories %}<option value="{{ category }}" {% if category == selected_category %}selected{% endif %}>{{ category }}</option>{% endfor %}
+    </select>
+    <button class="btn btn-gold btn-sm" type="submit">Aplicar filtro</button>
+    {% if selected_category %}<a class="text-link filter-clear" href="{% url 'services' %}">Limpiar</a>{% endif %}
+  </form>
+  <p class="filter-summary">{% if selected_category %}{{ services|length }} servicios en {{ selected_category }}{% else %}{{ services|length }} servicios disponibles{% endif %}</p>
+  {% include 'core/partials/service_carousel.html' with carousel_id='services-catalog' %}
+  <div class="average-note"><span class="eyebrow">REFERENCIA DE INVERSIÓN</span><p>El valor promedio de esta selección es <strong>{{ average_price|clp }}</strong>. La evaluación final depende del modelo y condición del vehículo.</p></div>
+</div></section>
+{% endblock %}

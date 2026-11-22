@@ -1,0 +1,11 @@
+{% extends 'core/base.html' %}
+{% load clp %}
+{% block title %}Planes de mantención | Apex Motors Premium Service{% endblock %}
+{% block content %}
+<section class="page-hero"><div class="container-xl reveal"><p class="eyebrow">APEX MOTORS PREMIUM SERVICE / PLANES</p><h1 class="display-title">Una relación que<br><em>cuida tu inversión.</em></h1><p class="lead-copy">Elige el nivel de cuidado ideal. Los valores son referenciales y se confirman después de evaluar tu vehículo.</p></div></section>
+<section class="plans-section section-pad pt-0"><div class="container-xl"><div class="row g-3">
+  <div class="col-md-4 reveal"><article class="plan-card"><span class="eyebrow">01 / ESENCIAL</span><h2>Esencial</h2><p class="plan-price">{{ 149000|clp }} <small>/ desde</small></p><p>Lo necesario para mantener el ritmo y anticiparse al desgaste cotidiano.</p><ul><li>Revisión multipunto</li><li>Chequeo de niveles y filtros</li><li>Informe de estado</li></ul><a class="text-link" href="{% url 'contact' %}">Elegir Esencial <span aria-hidden="true">↗</span></a></article></div>
+  <div class="col-md-4 reveal"><article class="plan-card plan-featured"><span class="plan-badge">MÁS ELEGIDO</span><span class="eyebrow">02 / PREMIUM</span><h2>Premium</h2><p class="plan-price">{{ 289000|clp }} <small>/ desde</small></p><p>Una mantención integral con atención detallada y tecnología avanzada.</p><ul><li>Todo lo del plan Esencial</li><li>Diagnóstico computarizado</li><li>Revisión de frenos y batería</li><li>Prioridad de agenda</li></ul><a class="btn btn-gold w-100" href="{% url 'contact' %}">Elegir Premium <span aria-hidden="true">↗</span></a></article></div>
+  <div class="col-md-4 reveal"><article class="plan-card"><span class="eyebrow">03 / ÉLITE</span><h2>Élite</h2><p class="plan-price">{{ 449000|clp }} <small>/ desde</small></p><p>El máximo estándar de cuidado para vehículos que exigen lo mejor.</p><ul><li>Todo lo del plan Premium</li><li>Evaluación técnica prioritaria</li><li>Detalle interior y exterior</li><li>Asesoría personalizada</li></ul><a class="text-link" href="{% url 'contact' %}">Elegir Élite <span aria-hidden="true">↗</span></a></article></div>
+</div><p class="pricing-note">Precios referenciales en pesos chilenos. Repuestos, especificaciones y valores finales se confirman en la evaluación.</p></div></section>
+{% endblock %}

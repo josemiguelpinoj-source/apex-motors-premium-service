@@ -1,0 +1,14 @@
+{% extends 'core/base.html' %}
+{% load static %}
+{% block title %}Galería | Apex Motors Premium Service{% endblock %}
+{% block content %}
+<section class="page-hero"><div class="container-xl reveal"><p class="eyebrow">APEX MOTORS / ESPACIO</p><h1 class="display-title">Donde el detalle<br><em>hace la diferencia.</em></h1><p class="lead-copy">Un espacio pensado para cuidar cada vehículo con precisión y dedicación.</p></div></section>
+<section class="gallery-section section-pad pt-0"><div class="container-xl">
+  <div class="gallery-grid">
+    <figure class="gallery-item gallery-tall reveal"><img src="{% static 'core/images/taller-mantencion.jpg' %}" alt="Interior de un taller automotriz equipado" loading="lazy"><span class="image-fallback" aria-hidden="true">✦</span><figcaption>01 / Ingeniería de precisión</figcaption></figure>
+    <figure class="gallery-item reveal"><img src="{% static 'core/images/frenos.jpg' %}" alt="Técnico revisando componentes de un automóvil" loading="lazy"><span class="image-fallback" aria-hidden="true">✦</span><figcaption>02 / Diagnóstico especializado</figcaption></figure>
+    <figure class="gallery-item reveal"><img src="{% static 'core/images/suspension-direccion.jpg' %}" alt="Área de trabajo limpia y profesional" loading="lazy"><span class="image-fallback" aria-hidden="true">✦</span><figcaption>03 / Atención personalizada</figcaption></figure>
+    <figure class="gallery-item gallery-wide reveal"><img src="{% static 'core/images/detalle-proteccion.jpg' %}" alt="Vehículo cuidado en un taller moderno" loading="lazy"><span class="image-fallback" aria-hidden="true">✦</span><figcaption>04 / Excelencia en cada entrega</figcaption></figure>
+  </div>
+</div></section>
+{% endblock %}

@@ -1,0 +1,74 @@
+[
+  {
+    "id": 1,
+    "name": "Diagnóstico computarizado",
+    "category": "Diagnóstico",
+    "description": "Lectura avanzada de sistemas electrónicos, informe técnico y recomendaciones claras.",
+    "price": 25000,
+    "duration": "1,5 horas",
+    "image": "/static/core/images/diagnostico-computarizado.jpg"
+  },
+  {
+    "id": 2,
+    "name": "Mantención premium",
+    "category": "Mantención",
+    "description": "Cambio de aceite y filtros, revisión multipunto y puesta a punto según fabricante.",
+    "price": 200000,
+    "duration": "3 horas",
+    "image": "/static/core/images/taller-mantencion.jpg"
+  },
+  {
+    "id": 3,
+    "name": "Sistema de frenos",
+    "category": "Reparación",
+    "description": "Inspección de discos y pastillas, diagnóstico y reparación con repuestos certificados.",
+    "price": 90000,
+    "duration": "2,5 horas",
+    "image": "/static/core/images/frenos.jpg"
+  },
+  {
+    "id": 4,
+    "name": "Alineación 3D",
+    "category": "Mantención",
+    "description": "Geometría de precisión para una conducción segura, estable y un desgaste parejo.",
+    "price": 30000,
+    "duration": "1 hora",
+    "image": "/static/core/images/alineacion-3d.jpg"
+  },
+  {
+    "id": 5,
+    "name": "Aire acondicionado",
+    "category": "Reparación",
+    "description": "Revisión de climatización, detección de fugas y recarga de refrigerante.",
+    "price": 100000,
+    "duration": "2 horas",
+    "image": "/static/core/images/aire-acondicionado.jpg"
+  },
+  {
+    "id": 6,
+    "name": "Batería y sistema de carga",
+    "category": "Diagnóstico",
+    "description": "Pruebas de batería, alternador y partida para anticipar fallas eléctricas.",
+    "price": 60000,
+    "duration": "1 hora",
+    "image": "/static/core/images/bateria-sistema-carga-nueva.jpg"
+  },
+  {
+    "id": 7,
+    "name": "Suspensión y dirección",
+    "category": "Reparación",
+    "description": "Evaluación de componentes, diagnóstico de ruidos y reparación especializada.",
+    "price": 135000,
+    "duration": "3 horas",
+    "image": "/static/core/images/suspension-direccion-reparacion.png"
+  },
+  {
+    "id": 8,
+    "name": "Detalle y protección",
+    "category": "Estética",
+    "description": "Limpieza detallada y protección de superficies interiores y exteriores.",
+    "price": 90000,
+    "duration": "4 horas",
+    "image": "/static/core/images/detalle-proteccion.jpg"
+  }
+]

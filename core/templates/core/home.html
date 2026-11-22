@@ -1,0 +1,55 @@
+{% extends 'core/base.html' %}
+{% load static %}
+{% block title %}Apex Motors Premium Service | Precisión premium en cada servicio{% endblock %}
+{% block content %}
+<section class="hero">
+  <div class="hero-image" role="img" aria-label="Automóvil premium en un taller moderno"></div>
+  <div class="hero-shade"></div>
+  <div class="container-xl hero-content reveal">
+    <p class="eyebrow eyebrow-light"><span class="eyebrow-line"></span> SERVICIO AUTOMOTRIZ PREMIUM · SANTIAGO</p>
+    <h1>Tu vehículo merece<br><em>un cuidado excepcional.</em></h1>
+    <p class="hero-copy">{{ business.tagline }} Tecnología avanzada y especialistas que entienden cada detalle.</p>
+    <div class="hero-actions">
+      <a class="btn btn-gold" href="{% url 'contact' %}">Agenda tu evaluación <span aria-hidden="true">↗</span></a>
+      <a class="hero-secondary" href="{% url 'services' %}">Explorar servicios <span aria-hidden="true">↓</span></a>
+    </div>
+    <div class="hero-footnote"><span class="status-dot"></span> Atención especializada para vehículos de alta gama</div>
+  </div>
+  <span class="hero-index">01 — APEX MOTORS PREMIUM SERVICE</span>
+</section>
+
+<section class="intro-section section-pad">
+  <div class="container-xl">
+    <div class="row g-5 align-items-end">
+      <div class="col-lg-6 reveal"><p class="eyebrow">01 / NUESTRA ESENCIA</p><h2 class="display-title">Ingeniería precisa.<br><em>Confianza genuina.</em></h2></div>
+      <div class="col-lg-5 offset-lg-1 reveal"><p class="lead-copy">Combinamos tecnología avanzada, atención personalizada y técnicos altamente capacitados para mantener el máximo rendimiento, seguridad y valor de tu vehículo.</p><a class="text-link" href="{% url 'gallery' %}">Conoce nuestro espacio <span aria-hidden="true">↗</span></a></div>
+    </div>
+    <div class="bento-grid mt-5">
+      <article class="bento-card bento-feature reveal"><span class="bento-index">01</span><div><span class="eyebrow">DIAGNÓSTICO INTELIGENTE</span><h3>La tecnología<br>al servicio de la precisión.</h3><a class="text-link" href="{% url 'services' %}?categoria=Diagn%C3%B3stico">Descubrir <span aria-hidden="true">↗</span></a></div></article>
+      <article class="bento-card bento-card-dark reveal"><span class="bento-index">02</span><div><span class="bento-symbol">✳</span><h3>Expertos<br>certificados</h3><p>Manos expertas. Estándares de fábrica.</p></div></article>
+      <article class="bento-card bento-card-image reveal"><span class="bento-index">03</span><div><span class="eyebrow eyebrow-light">ATENCIÓN PERSONALIZADA</span><h3>Tu experiencia,<br>sin sorpresas.</h3></div></article>
+    </div>
+  </div>
+</section>
+
+<section class="catalog-section section-pad">
+  <div class="container-xl">
+    <div class="section-heading reveal"><div><p class="eyebrow">02 / CATÁLOGO</p><h2 class="display-title">Cuidado experto,<br><em>en cada kilómetro.</em></h2></div><a class="text-link d-none d-md-inline-flex" href="{% url 'services' %}">Ver todos los servicios <span aria-hidden="true">↗</span></a></div>
+    {% include 'core/partials/service_carousel.html' with carousel_id='home-catalog' %}
+    <a class="text-link d-md-none mt-4" href="{% url 'services' %}">Ver todos los servicios <span aria-hidden="true">↗</span></a>
+  </div>
+</section>
+
+<section class="story-section section-pad">
+  <div class="container-xl">
+    <div class="story-image reveal"><img src="{% static 'core/images/promesa-servicio.jpg' %}" alt="Técnico realizando un diagnóstico automotriz" loading="lazy"><span class="image-fallback" aria-hidden="true">✦</span><div class="story-stamp"><span>APEX</span><small>PRECISIÓN EN MOVIMIENTO</small></div></div>
+    <div class="story-copy reveal"><p class="eyebrow">03 / NUESTRA PROMESA</p><h2 class="display-title">Un estándar<br><em>por sobre lo esperado.</em></h2><p class="lead-copy">En Apex Motors Premium Service, cada diagnóstico se explica, cada recomendación tiene fundamento y cada trabajo se realiza con el respeto que tu vehículo merece.</p><a class="btn btn-outline-gold" href="{% url 'plans' %}">Descubrir nuestros planes <span aria-hidden="true">↗</span></a></div>
+  </div>
+</section>
+
+<section class="testimonial-section section-pad">
+  <div class="container-xl reveal"><p class="eyebrow">04 / EXPERIENCIAS</p><div class="testimonial-mark">“</div><blockquote>Un servicio impecable de principio a fin. Me explicaron cada detalle y mi auto quedó como nuevo. La atención realmente marca la diferencia.</blockquote><div class="testimonial-byline"><span class="testimonial-line"></span><span>Cliente de Apex Motors Premium Service <small>Servicio de mantención premium</small></span></div></div>
+</section>
+
+<section class="cta-band"><div class="container-xl d-lg-flex align-items-center justify-content-between reveal"><div><p class="eyebrow eyebrow-light">EL SIGUIENTE PASO</p><h2>Tu próximo viaje empieza<br><em>con la tranquilidad correcta.</em></h2></div><a class="btn btn-gold" href="{% url 'contact' %}">Conversemos <span aria-hidden="true">↗</span></a></div></section>
+{% endblock %}
