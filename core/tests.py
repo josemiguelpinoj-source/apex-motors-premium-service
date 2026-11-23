@@ -16,7 +16,7 @@ class SitePagesTests(SimpleTestCase):
                 self.assertEqual(response.status_code, 200)
         home_page = self.client.get(reverse("home"))
         self.assertContains(home_page, reverse("service_detail", args=(1,)))
-        self.assertContains(home_page, "/static/core/images/promesa-estandar.jpg")
+        self.assertContains(home_page, "photos/15085608/")
 
     def test_home_shows_multibrand_section(self):
         response = self.client.get(reverse("home"))
