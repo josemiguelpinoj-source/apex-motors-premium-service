@@ -1,8 +1,12 @@
 """Vistas públicas del taller."""
+import json
 import re
+from datetime import date, datetime, timedelta
+from pathlib import Path
+from uuid import uuid4
 
 from django.contrib import messages
-from django.http import Http404
+from django.http import Http404, JsonResponse
 from django.shortcuts import redirect, render
 
 from .services import get_services
@@ -61,6 +65,183 @@ def gallery(request):
     return render(request, "core/gallery.html")
 
 
+def _time_to_minutes(value):
+    hour, minute = (int(part) for part in value.split(":"))
+    return hour * 60 + minute
+
+
+def _minutes_to_time(value):
+    return f"{value // 60:02d}:{value % 60:02d}"
+
+
+def _duration_minutes(duration):
+    normalized = duration.lower().replace(",", ".")
+    match = re.search(r"([\d.]+)", normalized)
+    if not match:
+        return 60
+    return max(30, int(float(match.group(1)) * 60))
+
+
+def booking_availability(request):
+    """Devuelve en JSON los horarios disponibles para una fecha y servicio."""
+    date_value = request.GET.get("date", "").strip()
+    service_id = request.GET.get("service", "").strip()
+    try:
+        selected_date = date.fromisoformat(date_value)
+        service = next(
+            (item for item in get_services() if str(item["id"]) == service_id),
+            None,
+        )
+    except ValueError:
+        return JsonResponse({"error": "Fecha no válida."}, status=400)
+
+    if service is None:
+        return JsonResponse({"error": "Servicio no válido."}, status=400)
+
+    config_path = Path(__file__).resolve().parent / "data" / "booking.json"
+    with config_path.open(encoding="utf-8") as file:
+        config = json.load(file)
+
+    today = date.today()
+    booking_end = date.fromisoformat(config["booking_end_date"])
+    if selected_date < today or selected_date > booking_end:
+        return JsonResponse({"error": "La fecha está fuera del calendario disponible."}, status=400)
+
+    weekday = selected_date.weekday()
+    if weekday == 6:
+        return JsonResponse({
+            "date": date_value,
+            "service": service["name"],
+            "duration_minutes": _duration_minutes(service["duration"]),
+            "hours": config["hours"]["sunday"],
+            "slots": [],
+        })
+
+    day_config = "saturday" if weekday == 5 else "weekday"
+    hours = config["hours"][day_config]
+    occupied = list(config["occupied"].get(day_config, {}).get(str(weekday), []))
+
+    offset = (selected_date - today).days
+    occupied.extend(config["specific_offsets"].get(str(offset), []))
+
+    duration = _duration_minutes(service["duration"])
+    slot_minutes = int(config["slot_minutes"])
+    open_minutes = _time_to_minutes(hours["open"])
+    close_minutes = _time_to_minutes(hours["close"])
+    slots = []
+
+    for start in range(open_minutes, close_minutes, slot_minutes):
+        end = start + duration
+        if end > close_minutes:
+            break
+
+        occupied_intervals = [
+            (_time_to_minutes(time), _time_to_minutes(time) + slot_minutes)
+            for time in occupied
+        ]
+        reservations_path = Path(__file__).resolve().parent / "data" / "reservations.json"
+        reservations = json.loads(reservations_path.read_text(encoding="utf-8"))
+        for reservation in reservations:
+            if reservation["date"] == date_value:
+                reservation_start = _time_to_minutes(reservation["time"])
+                reservation_end = reservation_start + int(reservation["duration_minutes"])
+                occupied_intervals.append((reservation_start, reservation_end))
+        is_occupied = any(start < busy_end and end > busy_start for busy_start, busy_end in occupied_intervals)
+        slots.append({
+            "time": _minutes_to_time(start),
+            "available": not is_occupied,
+        })
+
+    return JsonResponse({
+        "date": date_value,
+        "service": service["name"],
+        "duration_minutes": duration,
+        "hours": hours,
+        "slots": slots,
+    })
+
+
+def booking_confirm(request):
+    """Confirma y registra una reserva, bloqueando el horario seleccionado."""
+    if request.method != "POST":
+        return JsonResponse({"error": "Método no permitido."}, status=405)
+
+    date_value = request.POST.get("date", "").strip()
+    time_value = request.POST.get("time", "").strip()
+    service_id = request.POST.get("service", "").strip()
+    name = request.POST.get("name", "").strip()
+    email = request.POST.get("email", "").strip()
+
+    try:
+        selected_date = date.fromisoformat(date_value)
+    except ValueError:
+        return JsonResponse({"error": "Fecha no válida."}, status=400)
+
+    service = next((item for item in get_services() if str(item["id"]) == service_id), None)
+    if service is None:
+        return JsonResponse({"error": "Servicio no válido."}, status=400)
+    if not re.fullmatch(r"\d{2}:\d{2}", time_value):
+        return JsonResponse({"error": "Hora no válida."}, status=400)
+    if not 2 <= len(name) <= 80:
+        return JsonResponse({"error": "Ingresa tu nombre."}, status=400)
+    if not re.fullmatch(r"[^@\s]+@[^@\s]+\.[^@\s]+", email):
+        return JsonResponse({"error": "Ingresa un correo válido."}, status=400)
+
+    config_path = Path(__file__).resolve().parent / "data" / "booking.json"
+    config = json.loads(config_path.read_text(encoding="utf-8"))
+    today = date.today()
+    booking_end = date.fromisoformat(config["booking_end_date"])
+    if selected_date < today or selected_date > booking_end:
+        return JsonResponse({"error": "La reserva está fuera del calendario disponible."}, status=400)
+
+    reservations_path = Path(__file__).resolve().parent / "data" / "reservations.json"
+    reservations = json.loads(reservations_path.read_text(encoding="utf-8"))
+    if any(item["date"] == date_value and item["time"] == time_value for item in reservations):
+        return JsonResponse({"error": "Este horario acaba de ser reservado."}, status=409)
+
+    start = _time_to_minutes(time_value)
+    duration = _duration_minutes(service["duration"])
+    weekday = selected_date.weekday()
+    if weekday == 6:
+        return JsonResponse({"error": "El taller está cerrado los domingos."}, status=409)
+    day_config = "saturday" if weekday == 5 else "weekday"
+    hours = config["hours"][day_config]
+    if start < _time_to_minutes(hours["open"]) or start + duration > _time_to_minutes(hours["close"]):
+        return JsonResponse({"error": "El horario excede el funcionamiento del taller."}, status=409)
+
+    occupied_intervals = [
+        (_time_to_minutes(time), _time_to_minutes(time) + int(config["slot_minutes"]))
+        for time in config["occupied"].get(day_config, {}).get(str(weekday), [])
+    ]
+    for reservation in reservations:
+        if reservation["date"] == date_value:
+            reservation_start = _time_to_minutes(reservation["time"])
+            occupied_intervals.append((reservation_start, reservation_start + int(reservation["duration_minutes"])))
+    if any(start < busy_end and start + duration > busy_start for busy_start, busy_end in occupied_intervals):
+        return JsonResponse({"error": "El horario ya está ocupado."}, status=409)
+
+    reservations.append({
+        "date": date_value,
+        "time": time_value,
+        "service_id": int(service_id),
+        "service": service["name"],
+        "duration_minutes": duration,
+        "code": f"APX-{uuid4().hex[:8].upper()}",
+        "name": name,
+        "email": email,
+        "status": "confirmada",
+    })
+    reservations_path.write_text(json.dumps(reservations, ensure_ascii=False, indent=2), encoding="utf-8")
+
+    return JsonResponse({
+        "confirmed": True,
+        "date": date_value,
+        "time": time_value,
+        "service": service["name"],
+        "code": reservations[-1]["code"],
+    })
+
+
 def contact(request):
     """Valida el formulario y usa Post/Redirect/Get sin guardar datos."""
     if request.method == "POST":
@@ -68,6 +249,9 @@ def contact(request):
         email = request.POST.get("email", "").strip()
         phone = request.POST.get("phone", "").strip()
         message = request.POST.get("message", "").strip()
+        service_id = request.POST.get("service", "").strip()
+        booking_date = request.POST.get("booking_date", "").strip()
+        booking_time = request.POST.get("booking_time", "").strip()
         errors = []
 
         if not 2 <= len(name) <= 80:
@@ -78,6 +262,20 @@ def contact(request):
             errors.append("Revisa el formato del teléfono.")
         if not 10 <= len(message) <= 1000:
             errors.append("El mensaje debe tener entre 10 y 1.000 caracteres.")
+        if not service_id:
+            errors.append("Selecciona el servicio que deseas reservar.")
+        elif not any(str(item["id"]) == service_id for item in get_services()):
+            errors.append("Selecciona un servicio válido.")
+        if not booking_date or not booking_time:
+            errors.append("Selecciona una fecha y horario disponible.")
+        elif booking_date:
+            try:
+                requested_date = date.fromisoformat(booking_date)
+                end_date = date(2026, 12, 20)
+                if requested_date < date.today() or requested_date > end_date:
+                    errors.append("La reserva debe realizarse entre hoy y el 20 de diciembre.")
+            except ValueError:
+                errors.append("Selecciona una fecha válida.")
 
         if errors:
             for error in errors:
@@ -85,14 +283,25 @@ def contact(request):
             return render(
                 request,
                 "core/contact.html",
-                {"form_data": {"name": name, "email": email, "phone": phone, "message": message}},
+                {
+                    "form_data": {
+                        "name": name,
+                        "email": email,
+                        "phone": phone,
+                        "message": message,
+                        "service": service_id,
+                        "booking_date": booking_date,
+                        "booking_time": booking_time,
+                    },
+                    "services": get_services(),
+                },
                 status=400,
             )
 
         messages.success(
             request,
-            f"Gracias, {name}. Recibimos tu solicitud; te contactaremos pronto.",
+            f"Gracias, {name}. Recibimos tu solicitud para el {booking_date} a las {booking_time}; te confirmaremos la reserva pronto.",
         )
         return redirect("contact")
 
-    return render(request, "core/contact.html")
+    return render(request, "core/contact.html", {"services": get_services()})

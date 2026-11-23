@@ -1,0 +1,23 @@
+[
+  {
+    "date": "2026-11-26",
+    "time": "08:30",
+    "service_id": 4,
+    "service": "Alineación 3D",
+    "duration_minutes": 60,
+    "name": "jose",
+    "email": "josemiguel@gmail.com",
+    "status": "confirmada"
+  },
+  {
+    "date": "2026-11-25",
+    "time": "09:00",
+    "service_id": 7,
+    "service": "Suspensión y dirección",
+    "duration_minutes": 180,
+    "code": "APX-ABC6D462",
+    "name": "jose",
+    "email": "josepino@gmail.com",
+    "status": "confirmada"
+  }
+]

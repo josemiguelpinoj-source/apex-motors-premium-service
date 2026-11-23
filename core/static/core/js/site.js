@@ -146,4 +146,150 @@ document.addEventListener("DOMContentLoaded", () => {
   } else {
     revealItems.forEach((item) => item.classList.add("is-visible"));
   }
+
+  const bookingForm = document.querySelector("#booking-form");
+  if (bookingForm) {
+    const serviceSelect = document.querySelector("#service");
+    const dateInput = document.querySelector("#booking-date");
+    const refreshButton = document.querySelector("#booking-refresh");
+    const status = document.querySelector("#booking-status");
+    const slotsContainer = document.querySelector("#booking-slots");
+    const timeInput = document.querySelector("#booking-time");
+    const confirmButton = document.querySelector("#booking-confirm");
+    const today = new Date();
+    const formatDate = (value) => {
+      const year = value.getFullYear();
+      const month = String(value.getMonth() + 1).padStart(2, "0");
+      const day = String(value.getDate()).padStart(2, "0");
+      return `${year}-${month}-${day}`;
+    };
+    const tomorrow = new Date(today);
+    tomorrow.setDate(today.getDate() + 1);
+    const maximum = new Date("2026-12-20T12:00:00");
+    dateInput.min = formatDate(tomorrow);
+    dateInput.max = formatDate(maximum);
+    if (!dateInput.value) dateInput.value = formatDate(tomorrow);
+
+    const loadAvailability = async () => {
+      if (!serviceSelect.value || !dateInput.value) {
+        status.textContent = "Selecciona un servicio y una fecha.";
+        slotsContainer.innerHTML = "";
+        timeInput.value = "";
+        confirmButton.hidden = true;
+        return;
+      }
+
+      status.textContent = "Consultando horarios...";
+      slotsContainer.innerHTML = "";
+      timeInput.value = "";
+      try {
+        const params = new URLSearchParams({
+          date: dateInput.value,
+          service: serviceSelect.value,
+        });
+        const response = await fetch(`/api/reservas-disponibilidad/?${params}`);
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error || "No se pudo cargar la disponibilidad.");
+
+        if (!data.slots.length) {
+          status.textContent = "El taller está cerrado esta fecha.";
+          return;
+        }
+
+        const availableCount = data.slots.filter((slot) => slot.available).length;
+        status.textContent = `${availableCount} horario${availableCount === 1 ? "" : "s"} disponible${availableCount === 1 ? "" : "s"} · Duración estimada: ${data.duration_minutes / 60} h`;
+        data.slots.forEach((slot) => {
+          const button = document.createElement("button");
+          button.type = "button";
+          button.className = `booking-slot ${slot.available ? "is-available" : "is-occupied"}`;
+          button.textContent = slot.time;
+          button.disabled = !slot.available;
+          button.setAttribute("aria-label", slot.available ? `Reservar a las ${slot.time}` : `${slot.time}, ocupado`);
+          if (slot.available) {
+            button.addEventListener("click", () => {
+              slotsContainer.querySelectorAll(".booking-slot").forEach((item) => item.classList.remove("is-selected"));
+              button.classList.add("is-selected");
+              timeInput.value = slot.time;
+              status.textContent = `Horario seleccionado: ${slot.time}`;
+              confirmButton.hidden = false;
+            });
+          }
+          slotsContainer.appendChild(button);
+        });
+      } catch (error) {
+        status.textContent = error.message;
+      }
+    };
+
+    serviceSelect.addEventListener("change", loadAvailability);
+    dateInput.addEventListener("change", loadAvailability);
+    refreshButton.addEventListener("click", loadAvailability);
+    confirmButton.addEventListener("click", async () => {
+      const nameInput = document.querySelector("#name");
+      const emailInput = document.querySelector("#email");
+      if (!nameInput.value.trim() || !emailInput.value.trim()) {
+        status.textContent = "Completa nombre y correo antes de confirmar la reserva.";
+        (nameInput.value.trim() ? emailInput : nameInput).focus();
+        return;
+      }
+
+      const formData = new URLSearchParams({
+        date: dateInput.value,
+        time: timeInput.value,
+        service: serviceSelect.value,
+        name: nameInput.value,
+        email: emailInput.value,
+      });
+      confirmButton.disabled = true;
+      status.textContent = "Confirmando reserva...";
+      try {
+        const csrfToken = document.querySelector("[name=csrfmiddlewaretoken]").value;
+        const response = await fetch("/api/reservas-confirmar/", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "X-CSRFToken": csrfToken,
+          },
+          body: formData,
+        });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error || "No se pudo confirmar la reserva.");
+        confirmButton.hidden = true;
+        await loadAvailability();
+        status.textContent = `Reserva confirmada: ${data.date} a las ${data.time} — ${data.service}`;
+        document.querySelector("#receipt-code").textContent = data.code;
+        document.querySelector("#receipt-name").textContent = nameInput.value.trim();
+        document.querySelector("#receipt-service").textContent = data.service;
+        document.querySelector("#receipt-date").textContent = data.date;
+        document.querySelector("#receipt-time").textContent = data.time;
+        document.querySelector("#booking-receipt-modal").hidden = false;
+      } catch (error) {
+        status.textContent = error.message;
+      } finally {
+        confirmButton.disabled = false;
+      }
+    });
+    bookingForm.addEventListener("submit", (event) => {
+      if (!timeInput.value) {
+        event.preventDefault();
+        status.textContent = "Debes seleccionar un horario disponible.";
+        document.querySelector("#booking-slots").scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+    });
+    document.querySelector("#receipt-close").addEventListener("click", () => {
+      document.querySelector("#booking-receipt-modal").hidden = true;
+    });
+    document.querySelector("#receipt-print").addEventListener("click", () => window.print());
+    document.querySelector("#booking-receipt-modal").addEventListener("click", (event) => {
+      if (event.target.id === "booking-receipt-modal") {
+        event.currentTarget.hidden = true;
+      }
+    });
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") {
+        document.querySelector("#booking-receipt-modal").hidden = true;
+      }
+    });
+    loadAvailability();
+  }
 });

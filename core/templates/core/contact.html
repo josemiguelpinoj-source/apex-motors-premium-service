@@ -4,15 +4,42 @@
 <section class="page-hero"><div class="container-xl reveal"><p class="eyebrow">Apex Motors Premium Service / HABLEMOS</p><h1 class="display-title">El cuidado de tu auto<br><em>comienza aquí.</em></h1><p class="lead-copy">Cuéntanos qué necesitas. Nuestro equipo te contactará para coordinar una evaluación.</p></div></section>
 <section class="contact-section section-pad pt-0"><div class="container-xl row g-5">
   <div class="col-lg-5 contact-details reveal"><p class="eyebrow">ESTAMOS PARA AYUDARTE</p><h2 class="display-title">Atención<br><em>sin complicaciones.</em></h2><p>Te orientamos con transparencia desde el primer contacto.</p><div class="contact-detail"><span>LLÁMANOS</span><a href="tel:+56223456789">{{ business.phone }}</a></div><div class="contact-detail"><span>ESCRÍBENOS</span><a href="mailto:{{ business.email }}">{{ business.email }}</a></div><div class="contact-detail"><span>VISÍTANOS</span><p>{{ business.address }}<br>{% for day, hours in business.hours.items %}{{ day }}: {{ hours }}{% if not forloop.last %}<br>{% endif %}{% endfor %}</p></div></div>
-  <div class="col-lg-7 reveal"><form class="contact-form" method="post" action="{% url 'contact' %}" novalidate>
+  <div class="col-lg-7 reveal"><form class="contact-form" id="booking-form" method="post" action="{% url 'contact' %}" novalidate>
     {% csrf_token %}
     <div class="row g-3">
       <div class="col-md-6"><label for="name">Nombre</label><input id="name" name="name" type="text" maxlength="80" autocomplete="name" required value="{{ form_data.name|default:'' }}"></div>
       <div class="col-md-6"><label for="email">Correo electrónico</label><input id="email" name="email" type="email" maxlength="254" autocomplete="email" required value="{{ form_data.email|default:'' }}"></div>
       <div class="col-md-6"><label for="phone">Teléfono <span>(opcional)</span></label><input id="phone" name="phone" type="tel" maxlength="20" autocomplete="tel" value="{{ form_data.phone|default:'' }}"></div>
+      <div class="col-md-6"><label for="service">Servicio</label><select id="service" name="service" required><option value="">Selecciona un servicio</option>{% for item in services %}<option value="{{ item.id }}" {% if form_data.service == item.id|stringformat:'s' %}selected{% endif %}>{{ item.name }} — {{ item.duration }}</option>{% endfor %}</select></div>
+      <div class="col-12"><div class="booking-calendar"><div class="booking-calendar-header"><div><p class="eyebrow">RESERVA TU HORA</p><h3>Agenda tu atención</h3></div><div class="booking-hours">Lun–Vie 08:30–18:30<br>Sábado 08:30–13:00</div></div>
+        <div class="booking-controls"><div><label for="booking-date">Fecha</label><input id="booking-date" name="booking_date" type="date" required value="{{ form_data.booking_date|default:'' }}"></div><button type="button" id="booking-refresh" class="btn btn-outline-gold btn-sm">Actualizar horarios</button></div>
+        <div class="booking-status" id="booking-status" role="status">Selecciona un servicio y una fecha.</div>
+        <div class="booking-slots" id="booking-slots" aria-label="Horarios disponibles"></div>
+        <button type="button" id="booking-confirm" class="btn btn-gold booking-confirm" hidden>Confirmar reserva</button>
+        <input type="hidden" id="booking-time" name="booking_time" value="{{ form_data.booking_time|default:'' }}">
+      </div></div>
       <div class="col-12"><label for="message">¿Cómo podemos ayudarte?</label><textarea id="message" name="message" rows="5" maxlength="1000" required>{{ form_data.message|default:'' }}</textarea></div>
       <div class="col-12 form-submit"><p>Tus datos se usan solo para responder esta solicitud y no se almacenan en una base de datos.</p><button class="btn btn-gold" type="submit">Enviar solicitud <span aria-hidden="true">↗</span></button></div>
     </div>
   </form></div>
+</div></section>
+<div class="booking-receipt-modal" id="booking-receipt-modal" role="dialog" aria-modal="true" aria-labelledby="receipt-title" hidden>
+  <div class="booking-receipt">
+    <button type="button" class="booking-receipt-close" id="receipt-close" aria-label="Cerrar comprobante">×</button>
+    <p class="eyebrow">RESERVA CONFIRMADA</p>
+    <h3 id="receipt-title">Comprobante de reserva</h3>
+    <dl>
+      <div><dt>Código</dt><dd id="receipt-code"></dd></div>
+      <div><dt>Cliente</dt><dd id="receipt-name"></dd></div>
+      <div><dt>Servicio</dt><dd id="receipt-service"></dd></div>
+      <div><dt>Fecha</dt><dd id="receipt-date"></dd></div>
+      <div><dt>Hora</dt><dd id="receipt-time"></dd></div>
+    </dl>
+    <button type="button" class="btn btn-gold w-100" id="receipt-print">Imprimir comprobante</button>
+  </div>
+</div>
+<section class="location-section section-pad"><div class="container-xl">
+  <div class="location-heading reveal"><p class="eyebrow">DÓNDE ENCONTRARNOS</p><h2 class="display-title">Nuestra ubicación<br><em>en Santiago.</em></h2></div>
+  <div class="location-map reveal"><iframe title="Mapa de ubicación de Apex Motors Premium Service" src="https://maps.google.com/maps?q=Av.%20Concha%20y%20Toro%202505%2C%20Puente%20Alto%2C%20Santiago%2C%20Chile&amp;t=&amp;z=15&amp;ie=UTF8&amp;iwloc=&amp;output=embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe></div>
 </div></section>
 {% endblock %}

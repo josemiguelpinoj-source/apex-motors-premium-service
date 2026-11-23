@@ -10,4 +10,6 @@ urlpatterns = [
     path("planes/", views.plans, name="plans"),
     path("galeria/", views.gallery, name="gallery"),
     path("contacto/", views.contact, name="contact"),
+    path("api/reservas-disponibilidad/", views.booking_availability, name="booking_availability"),
+    path("api/reservas-confirmar/", views.booking_confirm, name="booking_confirm"),
 ]
