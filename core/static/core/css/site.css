@@ -85,6 +85,7 @@ img { display: block; max-width: 100%; }
 .carousel-count { margin: 0; color: #797a74; font-size: 10px; letter-spacing: .06em; }
 .carousel-controls { display: flex; gap: 8px; }
 .carousel-arrow { display: grid; width: 40px; height: 40px; place-items: center; border: 1px solid #d5d1c8; background: transparent; color: var(--ink); font-size: 19px; transition: all .2s ease; }
+.carousel-arrow[hidden] { display: none; }
 .carousel-arrow:hover:not(:disabled), .carousel-arrow:focus-visible { border-color: var(--gold); background: var(--gold); }
 .carousel-arrow:disabled { cursor: not-allowed; opacity: .35; }
 .carousel-track { display: flex; gap: 18px; overflow-x: auto; overscroll-behavior-x: contain; padding: 2px 1px 17px; scroll-behavior: smooth; scroll-snap-type: x mandatory; scrollbar-width: none; }
@@ -112,6 +113,21 @@ img { display: block; max-width: 100%; }
 .story-stamp small { font-size: 6px; letter-spacing: .1em; }
 .story-copy .display-title { margin-bottom: 25px; }
 .story-copy .lead-copy { max-width: 440px; margin-bottom: 30px; }
+.brands-section { background: var(--ink); }
+.brands-heading { display: flex; justify-content: space-between; align-items: end; gap: 35px; margin-bottom: 44px; }
+.brands-heading .eyebrow { color: var(--gold); }
+.brands-heading .display-title { color: var(--paper); font-size: clamp(42px, 5vw, 62px); }
+.brands-heading .display-title em { color: var(--gold); }
+.brands-heading > p { max-width: 440px; margin: 0 0 5px; color: rgba(242, 240, 235, .76); font-size: clamp(14px, 1.8vw, 20px); }
+.brands-grid { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 16px; margin: 0; padding: 0; list-style: none; }
+.brands-grid li { position: relative; display: grid; min-height: 145px; grid-template-rows: 1fr auto; place-items: center; gap: 8px; padding: 14px; border: 1px solid var(--line); background: var(--paper-light); color: var(--ink); font-family: var(--serif); font-size: clamp(18px, 2vw, 26px); font-weight: 600; text-align: center; box-shadow: 0 6px 14px rgba(0, 0, 0, .18); transform-style: preserve-3d; transition: transform .3s cubic-bezier(.2,.7,.2,1), box-shadow .3s ease; }
+.brands-grid img { width: min(100%, 150px); height: 80px; object-fit: contain; filter: drop-shadow(0 3px 3px rgba(17, 18, 16, .2)); transform: translateZ(12px); transition: transform .3s cubic-bezier(.2,.7,.2,1); }
+.brands-grid li:nth-child(3n + 2) { font-family: var(--sans); font-size: clamp(15px, 1.7vw, 22px); font-weight: 700; letter-spacing: .04em; }
+.brands-note { margin: 20px 0 0; color: rgba(242, 240, 235, .55); font-size: 9px; text-align: right; }
+@media (hover: hover) and (pointer: fine) {
+  .brands-grid li:hover { z-index: 1; box-shadow: 0 18px 28px rgba(0, 0, 0, .34); transform: perspective(800px) translateY(-7px) rotateX(5deg) scale(1.04); }
+  .brands-grid li:hover img { transform: translateZ(24px) scale(1.16); }
+}
 .testimonial-section { background: var(--ink); color: var(--paper); text-align: center; }
 .testimonial-section .eyebrow { color: var(--gold); }
 .testimonial-mark { height: 60px; color: var(--gold); font-family: var(--serif); font-size: 100px; line-height: 1; }
@@ -164,7 +180,7 @@ img { display: block; max-width: 100%; }
 .plan-featured { border-color: var(--gold); background: #e9e4d9; }
 .plan-badge { position: absolute; top: 0; right: 0; padding: 8px 12px; background: var(--gold); color: var(--ink); font-size: 7px; font-weight: 700; letter-spacing: .1em; }
 .pricing-note { margin: 25px 0 0; color: #81817a; font-size: 10px; }
-.gallery-grid { display: grid; grid-template-columns: 1.2fr .8fr; grid-template-rows: 300px 300px; gap: 16px; }
+.gallery-grid { display: grid; grid-template-columns: 1.2fr .8fr; grid-template-rows: 300px 300px; grid-auto-rows: 300px; gap: 16px; }
 .gallery-item { position: relative; min-width: 0; margin: 0; overflow: hidden; background: #d7d3ca; }
 .gallery-item::after { position: absolute; inset: 45% 0 0; background: linear-gradient(transparent, rgba(0,0,0,.62)); content: ""; pointer-events: none; }
 .gallery-item img { position: absolute; inset: 0; }
@@ -204,6 +220,10 @@ img { display: block; max-width: 100%; }
   .service-card { flex-basis: calc((100% - 18px) / 2); }
   .story-section .container-xl { grid-template-columns: 1fr 1fr; gap: 5%; }
   .story-image { height: 410px; }
+  .brands-heading { align-items: start; flex-direction: column; gap: 18px; }
+  .brands-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+  .brands-grid li { min-height: 108px; }
+  .brands-grid img { height: 52px; }
   .plan-card { padding: 30px 21px; }
 }
 @media (max-width: 767.98px) {
@@ -229,6 +249,10 @@ img { display: block; max-width: 100%; }
   .story-image { height: 370px; }
   .story-stamp { bottom: 14px; width: 108px; height: 96px; }
   .story-stamp span { font-size: 24px; }
+  .brands-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; }
+  .brands-grid li { min-height: 88px; padding: 9px 5px; font-size: 18px; }
+  .brands-grid img { width: min(100%, 150px); height: 62px; }
+  .brands-grid li:nth-child(3n + 2) { font-size: 15px; }
   .story-copy .display-title { font-size: 46px; }
   .testimonial-section blockquote { font-size: 31px; }
   .cta-band { padding: 58px 0; }
@@ -243,13 +267,14 @@ img { display: block; max-width: 100%; }
   .plan-card { min-height: auto; }
   .plan-card > p:not(.plan-price), .plan-card ul { min-height: 0; }
   .plan-featured { margin: 3px 0; }
-  .gallery-grid { grid-template-columns: 1fr 1fr; grid-template-rows: 230px 230px 230px; gap: 10px; }
+  .gallery-grid { grid-template-columns: 1fr 1fr; grid-template-rows: 230px 230px 230px; grid-auto-rows: 230px; gap: 10px; }
   .gallery-tall { grid-row: span 2; }
   .gallery-wide { grid-column: span 2; }
   .gallery-item figcaption { bottom: 12px; left: 12px; font-size: 7px; }
   .contact-form { padding: 24px 18px; }
   .form-submit { align-items: flex-start; }
 }
+
 @media (max-width: 400px) {
   .hero h1 { font-size: 42px; }
   .hero-actions { gap: 17px; }
@@ -262,4 +287,5 @@ img { display: block; max-width: 100%; }
   html { scroll-behavior: auto; }
   *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
   .reveal { opacity: 1; transform: none; }
+  .brands-grid li:hover, .brands-grid li:hover img { transform: none; }
 }

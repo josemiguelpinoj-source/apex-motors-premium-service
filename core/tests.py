@@ -18,6 +18,30 @@ class SitePagesTests(SimpleTestCase):
         self.assertContains(home_page, reverse("service_detail", args=(1,)))
         self.assertContains(home_page, "/static/core/images/promesa-estandar.jpg")
 
+    def test_home_shows_multibrand_section(self):
+        response = self.client.get(reverse("home"))
+        brands = (
+            ("citroen-logo.svg", "Citroën"),
+            ("audi-logo.svg", "Audi"),
+            ("subaru-logo.png", "Subaru"),
+            ("peugeot-logo.svg", "Peugeot"),
+            ("mercedes-benz-logo.svg", "Mercedes-Benz"),
+            ("jaguar-logo.svg", "Jaguar"),
+            ("porsche-logo.svg", "Porsche"),
+            ("alfa-romeo-logo.svg", "Alfa Romeo"),
+            ("volvo-logo.svg", "Volvo"),
+            ("dodge-logo.png", "Dodge"),
+            ("chrysler-logo.svg", "Chrysler"),
+            ("toyota-logo.svg", "Toyota"),
+        )
+        for logo, brand in brands:
+            with self.subTest(brand=brand):
+                self.assertContains(response, brand)
+                self.assertContains(
+                    response,
+                    f"/static/core/images/brands/{logo}",
+                )
+
     def test_services_are_read_from_json_and_can_be_filtered(self):
         self.assertGreaterEqual(len(get_services()), 6)
         self.assertTrue(all(item["image"].startswith("/static/core/images/") for item in get_services()))
@@ -34,6 +58,18 @@ class SitePagesTests(SimpleTestCase):
         response = self.client.get(reverse("services"))
         self.assertContains(response, "Económico")
         self.assertContains(response, "Premium")
+
+    def test_home_and_services_carousels_include_motion_control(self):
+        for route in ("home", "services"):
+            with self.subTest(route=route):
+                response = self.client.get(reverse(route))
+                self.assertContains(response, "data-carousel-toggle")
+
+    def test_gallery_loads_related_image_and_two_high_resolution_photos(self):
+        response = self.client.get(reverse("gallery"))
+        self.assertContains(response, "suspension-direccion-reparacion.png")
+        self.assertContains(response, "photos/4756886/")
+        self.assertContains(response, "photos/37163499/")
 
     def test_business_hours_are_rendered_as_readable_entries(self):
         response = self.client.get(reverse("home"))
