@@ -5,7 +5,8 @@
 <section class="hero">
   <div class="hero-image" role="img" aria-label="Automóvil premium en un taller moderno"></div>
   <video class="hero-video" autoplay muted loop playsinline preload="metadata" poster="{% static 'core/images/hero-apex.jpg' %}" aria-hidden="true">
-    <source src="{% static 'core/images/vehicle-in-motion.mp4' %}?v=2" type="video/mp4">
+    <source src="{% static 'core/images/vehicle-in-motion.webm' %}" type="video/webm">
+    <source src="{% static 'core/images/vehicle-in-motion.mp4' %}?v=3" type="video/mp4">
   </video>
   <div class="hero-shade"></div>
   <div class="container-xl hero-content reveal">
@@ -45,7 +46,7 @@
 
 <section class="story-section section-pad">
   <div class="container-xl">
-    <div class="story-image reveal"><img src="https://images.pexels.com/photos/15085608/pexels-photo-15085608.jpeg?auto=compress&amp;cs=tinysrgb&amp;w=1920" alt="Automóvil deportivo negro en un taller automotriz de alta gama" loading="lazy"><span class="image-fallback" aria-hidden="true">✦</span><div class="story-stamp"><span>APEX</span><small>PRECISIÓN EN MOVIMIENTO</small></div></div>
+    <div class="story-image reveal"><img src="https://images.pexels.com/photos/15085608/pexels-photo-15085608.jpeg?auto=compress&amp;cs=tinysrgb&amp;w=1200" alt="Automóvil deportivo negro en un taller automotriz de alta gama" loading="lazy"><span class="image-fallback" aria-hidden="true">✦</span><div class="story-stamp"><span>APEX</span><small>PRECISIÓN EN MOVIMIENTO</small></div></div>
     <div class="story-copy reveal"><p class="eyebrow">03 / NUESTRA PROMESA</p><h2 class="display-title">Un estándar<br><em>por sobre lo esperado.</em></h2><p class="lead-copy">En Apex Motors Premium Service, cada diagnóstico se explica, cada recomendación tiene fundamento y cada trabajo se realiza con el respeto que tu vehículo merece.</p><a class="btn btn-outline-gold" href="{% url 'plans' %}">Descubrir nuestros planes <span aria-hidden="true">↗</span></a></div>
   </div>
 </section>
