@@ -19,5 +19,49 @@
     "name": "jose",
     "email": "josepino@gmail.com",
     "status": "confirmada"
+  },
+  {
+    "date": "2026-12-02",
+    "time": "09:00",
+    "service_id": 4,
+    "service": "Alineación 3D",
+    "duration_minutes": 60,
+    "code": "APX-46C09B98",
+    "name": "jose",
+    "email": "jose@gmail.com",
+    "status": "confirmada"
+  },
+  {
+    "date": "2026-11-27",
+    "time": "13:00",
+    "service_id": 2,
+    "service": "Mantención premium",
+    "duration_minutes": 180,
+    "code": "APX-E2A543A2",
+    "name": "lucas",
+    "email": "lucas@gmail.com",
+    "status": "confirmada"
+  },
+  {
+    "date": "2026-11-28",
+    "time": "09:30",
+    "service_id": 1,
+    "service": "Diagnóstico computarizado",
+    "duration_minutes": 90,
+    "code": "APX-66B758E1",
+    "name": "jose",
+    "email": "josemiguelpinoj@gmail.com",
+    "status": "confirmada"
+  },
+  {
+    "date": "2026-11-28",
+    "time": "11:00",
+    "service_id": 6,
+    "service": "Batería y sistema de carga",
+    "duration_minutes": 60,
+    "code": "APX-DEA4BC0C",
+    "name": "manuel",
+    "email": "mnu@gmail.com",
+    "status": "confirmada"
   }
 ]
