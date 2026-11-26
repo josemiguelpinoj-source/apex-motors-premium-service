@@ -2,7 +2,7 @@ Apex Motors Premium Service
 
 ## El sitio
 
-Sitio de demostración en Django para clientes y propietarios de vehículos de mediana y alta gama que buscan diagnóstico, mantención o reparación especializada. Incluye Inicio, Servicios con filtro y detalle, Planes, Galería y Contacto. El catálogo vive en `core/data/services.json`; el formulario se valida en el servidor y no almacena información. Los datos comerciales y los valores son de ejemplo.
+Sitio de demostración en Django para clientes y propietarios de vehículos de mediana y alta gama que buscan diagnóstico, mantención o reparación especializada. Incluye Inicio, Servicios con filtro y detalle, Planes, Galería y Contacto. El catálogo vive en `core/data/services.json`; las reservas confirmadas se guardan en `core/data/reservations.json` y bloquean los horarios ocupados. Los mensajes de contacto se validan en el servidor y no se almacenan. Los datos comerciales y los valores son de ejemplo.
 
 ## Cómo ejecutarlo
 
@@ -10,6 +10,7 @@ Requiere Python 3.12 o superior. En Windows, desde la carpeta que contiene `mana
 
 ```powershell
 python -m venv venv
+
 .\venv\Scripts\Activate.ps1
 pip install -r requirements.txt
 python manage.py check

@@ -74,6 +74,31 @@ def _minutes_to_time(value):
     return f"{value // 60:02d}:{value % 60:02d}"
 
 
+def _reservations_path():
+    return Path(__file__).resolve().parent / "data" / "reservations.json"
+
+
+def _occupied_intervals(config, selected_date, reservations):
+    weekday = selected_date.weekday()
+    day_config = "saturday" if weekday == 5 else "weekday"
+    occupied_times = list(config["occupied"].get(day_config, {}).get(str(weekday), []))
+    offset = (selected_date - date.today()).days
+    occupied_times.extend(config["specific_offsets"].get(str(offset), []))
+    slot_minutes = int(config["slot_minutes"])
+    intervals = [
+        (_time_to_minutes(time), _time_to_minutes(time) + slot_minutes)
+        for time in occupied_times
+    ]
+
+    date_value = selected_date.isoformat()
+    for reservation in reservations:
+        if reservation.get("date") == date_value and reservation.get("status") == "confirmada":
+            reservation_start = _time_to_minutes(reservation["time"])
+            reservation_end = reservation_start + int(reservation["duration_minutes"])
+            intervals.append((reservation_start, reservation_end))
+    return intervals
+
+
 def _duration_minutes(duration):
     normalized = duration.lower().replace(",", ".")
     match = re.search(r"([\d.]+)", normalized)
@@ -119,15 +144,13 @@ def booking_availability(request):
 
     day_config = "saturday" if weekday == 5 else "weekday"
     hours = config["hours"][day_config]
-    occupied = list(config["occupied"].get(day_config, {}).get(str(weekday), []))
-
-    offset = (selected_date - today).days
-    occupied.extend(config["specific_offsets"].get(str(offset), []))
 
     duration = _duration_minutes(service["duration"])
     slot_minutes = int(config["slot_minutes"])
     open_minutes = _time_to_minutes(hours["open"])
     close_minutes = _time_to_minutes(hours["close"])
+    reservations = json.loads(_reservations_path().read_text(encoding="utf-8"))
+    occupied_intervals = _occupied_intervals(config, selected_date, reservations)
     slots = []
 
     for start in range(open_minutes, close_minutes, slot_minutes):
@@ -135,17 +158,6 @@ def booking_availability(request):
         if end > close_minutes:
             break
 
-        occupied_intervals = [
-            (_time_to_minutes(time), _time_to_minutes(time) + slot_minutes)
-            for time in occupied
-        ]
-        reservations_path = Path(__file__).resolve().parent / "data" / "reservations.json"
-        reservations = json.loads(reservations_path.read_text(encoding="utf-8"))
-        for reservation in reservations:
-            if reservation["date"] == date_value:
-                reservation_start = _time_to_minutes(reservation["time"])
-                reservation_end = reservation_start + int(reservation["duration_minutes"])
-                occupied_intervals.append((reservation_start, reservation_end))
         is_occupied = any(start < busy_end and end > busy_start for busy_start, busy_end in occupied_intervals)
         slots.append({
             "time": _minutes_to_time(start),
@@ -194,10 +206,8 @@ def booking_confirm(request):
     if selected_date < today or selected_date > booking_end:
         return JsonResponse({"error": "La reserva está fuera del calendario disponible."}, status=400)
 
-    reservations_path = Path(__file__).resolve().parent / "data" / "reservations.json"
+    reservations_path = _reservations_path()
     reservations = json.loads(reservations_path.read_text(encoding="utf-8"))
-    if any(item["date"] == date_value and item["time"] == time_value for item in reservations):
-        return JsonResponse({"error": "Este horario acaba de ser reservado."}, status=409)
 
     start = _time_to_minutes(time_value)
     duration = _duration_minutes(service["duration"])
@@ -206,17 +216,16 @@ def booking_confirm(request):
         return JsonResponse({"error": "El taller está cerrado los domingos."}, status=409)
     day_config = "saturday" if weekday == 5 else "weekday"
     hours = config["hours"][day_config]
-    if start < _time_to_minutes(hours["open"]) or start + duration > _time_to_minutes(hours["close"]):
+    open_minutes = _time_to_minutes(hours["open"])
+    slot_minutes = int(config["slot_minutes"])
+    if (
+        start < open_minutes
+        or start + duration > _time_to_minutes(hours["close"])
+        or (start - open_minutes) % slot_minutes
+    ):
         return JsonResponse({"error": "El horario excede el funcionamiento del taller."}, status=409)
 
-    occupied_intervals = [
-        (_time_to_minutes(time), _time_to_minutes(time) + int(config["slot_minutes"]))
-        for time in config["occupied"].get(day_config, {}).get(str(weekday), [])
-    ]
-    for reservation in reservations:
-        if reservation["date"] == date_value:
-            reservation_start = _time_to_minutes(reservation["time"])
-            occupied_intervals.append((reservation_start, reservation_start + int(reservation["duration_minutes"])))
+    occupied_intervals = _occupied_intervals(config, selected_date, reservations)
     if any(start < busy_end and start + duration > busy_start for busy_start, busy_end in occupied_intervals):
         return JsonResponse({"error": "El horario ya está ocupado."}, status=409)
 

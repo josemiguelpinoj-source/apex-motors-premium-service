@@ -19,7 +19,7 @@
         <input type="hidden" id="booking-time" name="booking_time" value="{{ form_data.booking_time|default:'' }}">
       </div></div>
       <div class="col-12"><label for="message">¿Cómo podemos ayudarte?</label><textarea id="message" name="message" rows="5" maxlength="1000" required>{{ form_data.message|default:'' }}</textarea></div>
-      <div class="col-12 form-submit"><p>Tus datos se usan solo para responder esta solicitud y no se almacenan en una base de datos.</p><button class="btn btn-gold" type="submit">Enviar solicitud <span aria-hidden="true">↗</span></button></div>
+      <div class="col-12 form-submit"><p>Los datos de las reservas confirmadas se guardan para gestionar los horarios; los mensajes de contacto no se almacenan.</p><button class="btn btn-gold" type="submit">Enviar solicitud <span aria-hidden="true">↗</span></button></div>
     </div>
   </form></div>
 </div></section>
