@@ -43,7 +43,7 @@ Se utilizó GitHub Copilot como agente de IA para apoyar la estructura, el códi
 - `core/context_processors.py`: menú e información comercial compartidos.
 - `core/data/services.json`: servicios de ejemplo, precios en CLP y rutas locales de sus imágenes.
 - `core/templates/core/`: estructura HTML reutilizable y las seis páginas.
-- `core/static/core/`: hoja de estilos responsive, JavaScript del carrusel e imágenes locales de tecnología, atención personalizada y equipo técnico.
+- `core/static/core/`: hoja de estilos responsive, JavaScript del carrusel, imágenes locales y el video de fondo del vehículo en movimiento.
 - `core/templatetags/clp.py`: filtro de precios que utiliza `humanize`.
 - `core/tests.py`: pruebas de páginas, filtro y formulario.
 - `requirements.txt`: Django y la dependencia externa `humanize`.

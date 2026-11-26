@@ -23,6 +23,8 @@ class SitePagesTests(SimpleTestCase):
         home_page = self.client.get(reverse("home"))
         self.assertContains(home_page, reverse("service_detail", args=(1,)))
         self.assertContains(home_page, "photos/15085608/")
+        self.assertContains(home_page, "core/images/vehicle-in-motion.mp4")
+        self.assertContains(home_page, "autoplay muted loop playsinline")
 
     def test_home_shows_multibrand_section(self):
         response = self.client.get(reverse("home"))
